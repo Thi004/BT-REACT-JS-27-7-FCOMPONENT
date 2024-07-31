@@ -1,11 +1,13 @@
-import logo from './logo.svg';
+
 import './App.css';
 import {ShowList} from "./ShowList";
+import {ListStudent} from "./ListStudent";
 
 function App() {
     return (
         <>
-            <ShowList></ShowList>
+            {/*<ShowList></ShowList>*/}
+            <ListStudent></ListStudent>
         </>
     );
 }
