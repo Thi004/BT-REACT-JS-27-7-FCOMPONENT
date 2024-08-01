@@ -1,10 +1,12 @@
 import {useEffect, useState} from "react";
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 
 export function ListStudent() {
     let [student, setStudent] = useState([]);
     let [nameSearch, setNameSearch] = useState('');
+    let navigate  = useNavigate()
     let getAll = () => {
         axios.get("http://localhost:3000/students").then((res) => {
             let data = res.data;
@@ -30,19 +32,19 @@ export function ListStudent() {
     }
     let sortBySore = (event) => {
         let value = event.target.value;
-        if(value === "") {
+        if (value === "") {
             getAll();
             return;
         }
-        if(value === "asc") {
+        if (value === "asc") {
             let newList = [...student];
-            newList.sort((a , b) => {
+            newList.sort((a, b) => {
                 return a.score - b.score;
             });
             setStudent(newList);
         } else {
             let newList = [...student];
-            newList.sort((a , b) => {
+            newList.sort((a, b) => {
                 return b.score - a.score;
             });
             setStudent(newList);
@@ -82,8 +84,12 @@ export function ListStudent() {
                         </tr>
                     </>
                 )}
-
             </table>
+            <button onClick={() => {
+                navigate('/a')
+            }}
+            >Go to page A
+            </button>
         </>
     )
 }
