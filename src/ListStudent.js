@@ -5,23 +5,62 @@ import axios from "axios";
 export function ListStudent() {
     let [student, setStudent] = useState([]);
     let [nameSearch, setNameSearch] = useState('');
-    useEffect(() => {
-        axios.get('http://localhost:3000/students').then(res => {
-            console.log(res.data)
-            setStudent(res.data)
+    let getAll = () => {
+        axios.get("http://localhost:3000/students").then((res) => {
+            let data = res.data;
+            setStudent(data);
         })
+    }
+
+    useEffect(() => {
+        getAll();
     }, []);
-    const filterStudents = student.filter((stu) => {
-        const searchStudentName = stu.name.toUpperCase().includes(nameSearch.toUpperCase());
-        console.log(nameSearch)
-        return searchStudentName
-    })
+    let searchName = (event) => {
+        let name = event.target.value;
+        setNameSearch(name);
+        if (name === "") {
+            getAll();
+            return;
+        }
+        let newLList = student.filter((item) => {
+            return item.name.toLowerCase().includes(name.toLowerCase());
+        });
+        console.log(newLList);
+        setStudent(newLList);
+    }
+    let sortBySore = (event) => {
+        let value = event.target.value;
+        if(value === "") {
+            getAll();
+            return;
+        }
+        if(value === "asc") {
+            let newList = [...student];
+            newList.sort((a , b) => {
+                return a.score - b.score;
+            });
+            setStudent(newList);
+        } else {
+            let newList = [...student];
+            newList.sort((a , b) => {
+                return b.score - a.score;
+            });
+            setStudent(newList);
+        }
+    }
     return (
         <>
+            <input placeholder="Search Name" value={nameSearch} onChange={(event) => {
+                searchName(event)
+            }}></input>
+            <select onChange={(event) => {
+                sortBySore(event)
+            }}>
+                <option value="">Sắp xếp điểm</option>
+                <option value="asc">Tăng dần</option>
+                <option value="desc">Giảm dần</option>
+            </select>
             <h2>DANH SÁCH SINH VIÊN</h2>
-            <input onChange={(event) => {
-                setNameSearch([event.target.value])
-            }} placeholder={'search for name'}/>
             <table>
                 <tr>
                     <th>Num</th>
@@ -31,15 +70,17 @@ export function ListStudent() {
                     <th>Action</th>
                     <th>Score</th>
                 </tr>
-                {filterStudents.map((item, index) =>
-                    <tr>
-                        <td>{index + 1}</td>
-                        <td>{item.id}</td>
-                        <td>{item.name}</td>
-                        <td>{item.description}</td>
-                        <td>{item.action}</td>
-                        <td>{item.score}</td>
-                    </tr>
+                {student.map((item, index) =>
+                    <>
+                        <tr>
+                            <td>{index + 1}</td>
+                            <td>{item.id}</td>
+                            <td>{item.name}</td>
+                            <td>{item.description}</td>
+                            <td>{item.action}</td>
+                            <td>{item.score}</td>
+                        </tr>
+                    </>
                 )}
 
             </table>
